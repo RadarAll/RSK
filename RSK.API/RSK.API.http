@@ -1,0 +1,6 @@
+@RSK.API_HostAddress = http://localhost:5015
+
+GET {{RSK.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

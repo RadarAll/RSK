@@ -1,0 +1,102 @@
+# =========================
+# .NET / C# Backend
+# =========================
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.log
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+.history/
+
+# Packages
+*.nupkg
+*.snupkg
+*.nuspec
+*.bak
+*.tmp
+*.swp
+*.sln.cache
+*.userprefs
+packages/
+!**/packages/build/
+!**/packages/repositories.config
+
+# Backup and generated files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Publish outputs
+publish/
+dist/
+artifacts/
+
+# Entity Framework
+Migrations/
+# Caso queira versionar as migrations, comente a linha acima
+
+# Secrets & configs
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.json
+secrets.json
+*.env
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# DotCover
+*.dotCover
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+
+# Others
+*.dbmdl
+*.mdf
+*.ldf
+*.sqlite
+*.sqlite3
+*.db
+*.pdb
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# JetBrains Cache
+.idea/
+*.sln.iml
+
+# Temporary key files
+*.pfx
+*.snk
