@@ -48,7 +48,7 @@ namespace RSK.Dominio.Servicos
             try
             {
                 entidade.AtualizarDataAlteracao();
-                await _repositorio.AtualizarAssincrono(entidade);
+                _repositorio.AtualizarAssincrono(entidade);
                 await _transacao.CommitAssincrono();
                 _mensagens.Adicionar($"{typeof(TEntity).Name} atualizada com sucesso!");
                 return entidade;
@@ -73,7 +73,7 @@ namespace RSK.Dominio.Servicos
             patchDoc.ApplyTo(entidade);
 
             entidade.AtualizarDataAlteracao();
-            await _repositorio.AtualizarAssincrono(entidade);
+            _repositorio.AtualizarAssincrono(entidade);
             await _transacao.CommitAssincrono();
 
             _mensagens.Adicionar($"{typeof(TEntity).Name} atualizada parcialmente com sucesso.");

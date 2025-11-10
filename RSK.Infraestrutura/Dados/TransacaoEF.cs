@@ -33,11 +33,6 @@ namespace RSK.Infraestrutura.Dados
 
             try
             {
-                if (_notificador.PossuiErros())
-                {
-                    await RollbackAssincrono();
-                    return 0;
-                }
                 var resultado = await _contexto.SaveChangesAsync();
                 await _transacaoAtual.CommitAsync();
 
@@ -78,12 +73,23 @@ namespace RSK.Infraestrutura.Dados
         /// </summary>
         public void Dispose()
         {
-
             if (_transacaoAtual != null)
             {
-                _transacaoAtual.Rollback();
-                _transacaoAtual.Dispose();
+                try
+                {
+                    _transacaoAtual.Rollback();
+                }
+                catch
+                {
+                    // ignora, já foi commit/rollback
+                }
+                finally
+                {
+                    _transacaoAtual.Dispose();
+                    _transacaoAtual = null;
+                }
             }
         }
+
     }
 }

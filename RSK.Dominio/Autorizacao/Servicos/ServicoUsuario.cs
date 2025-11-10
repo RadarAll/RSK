@@ -106,7 +106,7 @@ namespace RSK.Dominio.Autorizacao.Servicos
             usuario.Ativo = usuario.DataDesativacao == default || usuario.DataDesativacao > DateTime.UtcNow;
 
             usuario.AtualizarDataAlteracao();
-            await _repositorio.AtualizarAssincrono(usuario);
+            _repositorio.AtualizarAssincrono(usuario);
             await _transacao.CommitAssincrono();
 
             return usuario;

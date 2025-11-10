@@ -7,5 +7,6 @@ namespace RSK.Dominio.Notificacoes.Interfaces
         void Adicionar(string texto, TipoMensagem tipo = TipoMensagem.Informacao);
         void AdicionarErro(string texto);
         void AdicionarAviso(string texto);
+        void Limpar();
     }
 }

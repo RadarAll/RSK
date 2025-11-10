@@ -42,12 +42,12 @@ namespace RSK.API.Controllers
             });
         }
 
-        [HttpPut("{id:long}")]
-        public virtual async Task<IActionResult> Put(long id, [FromBody] TEntity entidade)
+        [HttpPut]
+        public virtual async Task<IActionResult> Put([FromBody] TEntity entidade)
         {
-            var existente = await _servicoCrud.ObterPorIdAssincrono(id);
+            var existente = await _servicoCrud.ObterPorIdAssincrono(entidade.Id);
             if (existente == null)
-                return NotFound(new { mensagens = new[] { new { Texto = $"{typeof(TEntity).Name} não encontrada.", Tipo = "Erro" } } });
+                return NotFound(new { mensagens = new[] { new { Texto = $"{typeof(TEntity).Name} não encontrado(a).", Tipo = "Erro" } } });
 
             var resultado = await _servicoCrud.AtualizarAssincrono(entidade);
 

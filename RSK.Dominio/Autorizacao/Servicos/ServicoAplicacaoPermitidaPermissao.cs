@@ -21,9 +21,9 @@ namespace RSK.Dominio.Autorizacao.Servicos
             string controller,
             string acao)
         {
-            string secretHash = _hasher.Hash(integrationSecret);
+            //string secretHash = _hasher.Hash(integrationSecret);
 
-            var aplicacao = await _repositorio.ObterPorSecretHashAsync(secretHash);
+            var aplicacao = await _repositorio.ObterPorSecretHashAsync(integrationSecret);
 
             if (aplicacao == null || !aplicacao.Ativa)
             {

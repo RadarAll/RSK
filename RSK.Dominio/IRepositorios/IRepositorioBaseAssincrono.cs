@@ -9,8 +9,12 @@ namespace RSK.Dominio.IRepositorios
         Task<TEntity?> ObterPorIdAssincrono(object id);
         Task<IEnumerable<TEntity>> BuscarAssincrono(Expression<Func<TEntity, bool>> predicate);
         Task AdicionarAssincrono(TEntity entity);
-        Task AtualizarAssincrono(TEntity entity);
+        void AtualizarAssincrono(TEntity entity);
         Task DeletarAssincrono(object id);
         Task<int> SalvarAlteracoesAssincrono();
+
+
+        Task BulkAdicionarAssincrono(IEnumerable<TEntity> entidades);
+        Task BulkAtualizarAssincrono(IEnumerable<TEntity> entidades);
     }
 }

@@ -5,7 +5,7 @@ namespace RSK.Dominio.Entidades
     public abstract class EntidadeBase
     {
         [Key]
-        public long Id { get; protected set; }
+        public long Id { get; set; }
         public DateTime CriadoEm { get; set; }
         public DateTime UltimaAlteracao { get; set; }
 

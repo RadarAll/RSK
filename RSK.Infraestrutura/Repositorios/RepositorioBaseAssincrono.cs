@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EFCore.BulkExtensions;
+using Microsoft.EntityFrameworkCore;
 using RSK.Dominio.Entidades;
 using RSK.Dominio.IRepositorios;
 using System.Linq.Expressions;
-
 
 namespace RSK.Infraestrutura.Repositorios
 {
@@ -19,7 +19,7 @@ namespace RSK.Infraestrutura.Repositorios
             _dbSet = _context.Set<TEntity>();
         }
 
-        public IQueryable<TEntity> Consulta => _dbSet.AsNoTracking();
+        public IQueryable<TEntity> Consulta => _context.Set<TEntity>().AsNoTracking();
 
         public virtual async Task<IEnumerable<TEntity>> ObterTodosAssincrono()
         {
@@ -41,24 +41,46 @@ namespace RSK.Infraestrutura.Repositorios
             await _dbSet.AddAsync(entity);
         }
 
-        public virtual Task AtualizarAssincrono(TEntity entity)
+        public virtual void AtualizarAssincrono(TEntity entity)
         {
-            _dbSet.Update(entity);
-            return Task.CompletedTask;
+            var local = _context.Set<TEntity>().Local.FirstOrDefault(e => e.Id == entity.Id);
+            if (local != null)
+            {
+                _context.Entry(local).State = EntityState.Detached;
+            }
+
+            _dbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
 
         public virtual async Task DeletarAssincrono(object id)
         {
             var entity = await ObterPorIdAssincrono(id);
             if (entity != null)
-            {
                 _dbSet.Remove(entity);
-            }
         }
 
         public virtual async Task<int> SalvarAlteracoesAssincrono()
         {
             return await _context.SaveChangesAsync();
+        }
+
+        // ✅ Novo método: inserção em lote
+        public virtual async Task BulkAdicionarAssincrono(IEnumerable<TEntity> entidades)
+        {
+            if (entidades == null || !entidades.Any())
+                return;
+
+            await _context.BulkInsertAsync(entidades.ToList());
+        }
+
+        // ✅ Atualização em lote
+        public virtual async Task BulkAtualizarAssincrono(IEnumerable<TEntity> entidades)
+        {
+            if (entidades == null || !entidades.Any())
+                return;
+
+            await _context.BulkUpdateAsync(entidades.ToList());
         }
     }
 }
