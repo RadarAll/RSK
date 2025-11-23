@@ -28,7 +28,11 @@ namespace RSK.Infraestrutura.Repositorios
 
         public virtual async Task<TEntity?> ObterPorIdAssincrono(object id)
         {
-            return await _dbSet.FindAsync(id);
+            long longId = Convert.ToInt64(id); // converte com segurança
+
+            return await _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == longId);
         }
 
         public virtual async Task<IEnumerable<TEntity>> BuscarAssincrono(Expression<Func<TEntity, bool>> predicate)
@@ -65,7 +69,6 @@ namespace RSK.Infraestrutura.Repositorios
             return await _context.SaveChangesAsync();
         }
 
-        // ✅ Novo método: inserção em lote
         public virtual async Task BulkAdicionarAssincrono(IEnumerable<TEntity> entidades)
         {
             if (entidades == null || !entidades.Any())
@@ -74,7 +77,6 @@ namespace RSK.Infraestrutura.Repositorios
             await _context.BulkInsertAsync(entidades.ToList());
         }
 
-        // ✅ Atualização em lote
         public virtual async Task BulkAtualizarAssincrono(IEnumerable<TEntity> entidades)
         {
             if (entidades == null || !entidades.Any())
