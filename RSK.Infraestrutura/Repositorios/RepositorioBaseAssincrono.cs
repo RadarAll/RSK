@@ -92,19 +92,15 @@ namespace RSK.Infraestrutura.Repositorios
                                       ex.InnerException?.Message.Contains("local data loading") == true)
             {
                 // Fallback para inserção normal se LOAD DATA LOCAL INFILE estiver desabilitado
-                Console.WriteLine($"[BULK FALLBACK] BulkInsertAsync falhou: {ex.Message}. Usando fallback para {entidades.Count()} entidades.");
                 foreach (var entidade in entidades)
                 {
                     await _context.Set<TEntity>().AddAsync(entidade);
                 }
                 await _context.SaveChangesAsync();
-                Console.WriteLine($"[BULK FALLBACK] Fallback concluído com sucesso para BulkAdicionarAssincrono.");
             }
             catch (Exception ex)
             {
                 // Log do erro não tratado
-                Console.WriteLine($"[BULK ERROR] Erro não tratado em BulkAdicionarAssincrono: {ex.Message}");
-                Console.WriteLine($"[BULK ERROR] StackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -127,19 +123,15 @@ namespace RSK.Infraestrutura.Repositorios
                                       ex.InnerException?.Message.Contains("local data loading") == true)
             {
                 // Fallback para atualização normal se LOAD DATA LOCAL INFILE estiver desabilitado
-                Console.WriteLine($"[BULK FALLBACK] BulkUpdateAsync falhou: {ex.Message}. Usando fallback para {entidades.Count()} entidades.");
                 foreach (var entidade in entidades)
                 {
                     _context.Set<TEntity>().Update(entidade);
                 }
                 await _context.SaveChangesAsync();
-                Console.WriteLine($"[BULK FALLBACK] Fallback concluído com sucesso para BulkAtualizarAssincrono.");
             }
             catch (Exception ex)
             {
                 // Log do erro não tratado
-                Console.WriteLine($"[BULK ERROR] Erro não tratado em BulkAtualizarAssincrono: {ex.Message}");
-                Console.WriteLine($"[BULK ERROR] StackTrace: {ex.StackTrace}");
                 throw;
             }
         }
