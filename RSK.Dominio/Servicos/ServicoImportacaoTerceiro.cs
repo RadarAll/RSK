@@ -28,13 +28,18 @@ namespace RSK.Dominio.Servicos
 
                 var nomeEntidade = typeof(TEntity).Name;
                 _mensagens.Adicionar(
-                    $"{nomeEntidade} com ID de Terceiro '{idTerceiro}' n„o encontrado. A sincronizaÁ„o deste dado mestre deve ser executada antes.",
+                    $"{nomeEntidade} com ID de Terceiro '{idTerceiro}' n√£o encontrado. A sincroniza√ß√£o deste dado mestre deve ser executada antes.",
                     TipoMensagem.Erro);
 
                 return null;
             }
 
             return entidade;
+        }
+
+        public async Task<TEntity?> ObterPorIdTerceiroAssincronoParaImportacao(string idTerceiro)
+        {
+            return await _repositorio.ObterPorIdTerceiroAssincrono(idTerceiro);
         }
     }
 }

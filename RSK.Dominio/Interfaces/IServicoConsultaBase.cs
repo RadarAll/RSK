@@ -7,6 +7,7 @@ namespace RSK.Dominio.Interfaces
     {
         Task<TEntity?> ObterPorIdAssincrono(long id);
         Task<IEnumerable<TEntity>> ObterTodosAssincrono();
+        Task<List<TEntity>> ObterTodosComoListaAsync();
         //Task<IEnumerable<TEntity>> BuscarAssincrono(Expression<Func<TEntity, bool>> predicado);
         IQueryable<TEntity> ObterIQueryable();
     }

@@ -6,6 +6,7 @@ namespace RSK.Dominio.IRepositorios
     {
         IQueryable<TEntity> Consulta { get; }
         Task<IEnumerable<TEntity>> ObterTodosAssincrono();
+        Task<List<TEntity>> ObterTodosComoListaAsync();
         Task<TEntity?> ObterPorIdAssincrono(object id);
         Task<IEnumerable<TEntity>> BuscarAssincrono(Expression<Func<TEntity, bool>> predicate);
         Task AdicionarAssincrono(TEntity entity);

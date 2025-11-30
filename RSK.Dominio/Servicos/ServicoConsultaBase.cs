@@ -49,6 +49,11 @@ namespace RSK.Dominio.Servicos
             return await _repositorio.ObterPorIdAssincrono(id);
         }
 
+        public virtual async Task<List<TEntity>> ObterTodosComoListaAsync()
+        {
+            return await _repositorio.ObterTodosComoListaAsync();
+        }
+
         public virtual Task<IEnumerable<TEntity>> ObterTodosAssincrono()
         {
             return _repositorio.ObterTodosAssincrono();
