@@ -21,6 +21,11 @@ namespace RSK.Infraestrutura.Repositorios
 
         public IQueryable<TEntity> Consulta => _context.Set<TEntity>().AsNoTracking();
 
+        public async Task<List<TEntity>> ObterTodosComoListaAsync()
+        {
+            return await _dbSet.AsNoTracking().ToListAsync();
+        }
+
         public virtual async Task<IEnumerable<TEntity>> ObterTodosAssincrono()
         {
             return await Consulta.ToListAsync();
@@ -74,7 +79,34 @@ namespace RSK.Infraestrutura.Repositorios
             if (entidades == null || !entidades.Any())
                 return;
 
-            await _context.BulkInsertAsync(entidades.ToList());
+            try
+            {
+                // Tentar bulk insert primeiro
+                await _context.BulkInsertAsync(entidades.ToList());
+            }
+            catch (Exception ex) when (ex.Message.Contains("Loading local data is disabled") ||
+                                      ex.Message.Contains("LOAD DATA LOCAL INFILE") ||
+                                      ex.Message.Contains("local data loading") ||
+                                      ex.InnerException?.Message.Contains("Loading local data is disabled") == true ||
+                                      ex.InnerException?.Message.Contains("LOAD DATA LOCAL INFILE") == true ||
+                                      ex.InnerException?.Message.Contains("local data loading") == true)
+            {
+                // Fallback para inserção normal se LOAD DATA LOCAL INFILE estiver desabilitado
+                Console.WriteLine($"[BULK FALLBACK] BulkInsertAsync falhou: {ex.Message}. Usando fallback para {entidades.Count()} entidades.");
+                foreach (var entidade in entidades)
+                {
+                    await _context.Set<TEntity>().AddAsync(entidade);
+                }
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"[BULK FALLBACK] Fallback concluído com sucesso para BulkAdicionarAssincrono.");
+            }
+            catch (Exception ex)
+            {
+                // Log do erro não tratado
+                Console.WriteLine($"[BULK ERROR] Erro não tratado em BulkAdicionarAssincrono: {ex.Message}");
+                Console.WriteLine($"[BULK ERROR] StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
         public virtual async Task BulkAtualizarAssincrono(IEnumerable<TEntity> entidades)
@@ -82,7 +114,34 @@ namespace RSK.Infraestrutura.Repositorios
             if (entidades == null || !entidades.Any())
                 return;
 
-            await _context.BulkUpdateAsync(entidades.ToList());
+            try
+            {
+                // Tentar bulk update primeiro
+                await _context.BulkUpdateAsync(entidades.ToList());
+            }
+            catch (Exception ex) when (ex.Message.Contains("Loading local data is disabled") ||
+                                      ex.Message.Contains("LOAD DATA LOCAL INFILE") ||
+                                      ex.Message.Contains("local data loading") ||
+                                      ex.InnerException?.Message.Contains("Loading local data is disabled") == true ||
+                                      ex.InnerException?.Message.Contains("LOAD DATA LOCAL INFILE") == true ||
+                                      ex.InnerException?.Message.Contains("local data loading") == true)
+            {
+                // Fallback para atualização normal se LOAD DATA LOCAL INFILE estiver desabilitado
+                Console.WriteLine($"[BULK FALLBACK] BulkUpdateAsync falhou: {ex.Message}. Usando fallback para {entidades.Count()} entidades.");
+                foreach (var entidade in entidades)
+                {
+                    _context.Set<TEntity>().Update(entidade);
+                }
+                await _context.SaveChangesAsync();
+                Console.WriteLine($"[BULK FALLBACK] Fallback concluído com sucesso para BulkAtualizarAssincrono.");
+            }
+            catch (Exception ex)
+            {
+                // Log do erro não tratado
+                Console.WriteLine($"[BULK ERROR] Erro não tratado em BulkAtualizarAssincrono: {ex.Message}");
+                Console.WriteLine($"[BULK ERROR] StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
     }
 }
